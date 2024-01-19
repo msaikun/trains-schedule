@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, Method } from 'axios';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:5001';
 
 export type TApiCaller = <R = unknown, T = unknown> (
   endpoint: string,

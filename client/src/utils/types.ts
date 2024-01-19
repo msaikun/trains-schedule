@@ -1,7 +1,6 @@
 export enum ETrainArrival {
   OnTime,
   Delayed,
-  Canceled,
 }
 
 export enum ECarriage {

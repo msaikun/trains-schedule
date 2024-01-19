@@ -9,7 +9,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-	constructor(private usersService: UsersService) { }
+	constructor(private usersService: UsersService) {}
 
 	@ApiOperation({ summary: 'User creation' })
 	@ApiResponse({ status: 200, type: User })
@@ -24,5 +24,12 @@ export class UsersController {
 	@Get()
 	getAll() {
 		return this.usersService.getAllUsers();
+	}
+
+	@ApiOperation({ summary: 'Get user by accessToken' })
+	@ApiResponse({ status: 200, type: User })
+	@Get('user')
+	async getProfileByToken(token: string) {
+		return this.usersService.getUserByToken(token);
 	}
 }
