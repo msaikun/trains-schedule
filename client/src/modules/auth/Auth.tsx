@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
 import { authValidationSchema } from '../../utils/validationSchemas';
-import { useSignUpRequest } from '../../hooks/useSignUpRequest';
-import { useSignInRequest } from '../../hooks/useSignInRequest';
 import LoginImage from '../../assets/log-in.png';
 import { AuthForm } from './AuthForm';
 
@@ -30,21 +28,18 @@ interface IAuthProps {
 export const Auth = ({ isRegistered }: IAuthProps) => {
   const router = useRouter();
 
-  const [signUp] = useSignUpRequest();
-  const [signIn] = useSignInRequest();
-
   const onLinkClick = useCallback(() => {
     router.push(isRegistered ? '/signup' : '/signin');
   }, []);
 
   const handleSubmit = useCallback(async ({ email, password, userName, isAdmin }: IAuthFormValues) => {
     if (isRegistered) {
-      await signIn({ email, password });
+      // await signIn({ email, password });
     } else {
-      await signUp({ email, password, userName, isAdmin });
+      // await signUp({ email, password, userName, isAdmin });
     }
     console.log('auth submit!', isRegistered)
-  }, [isRegistered, signUp, signIn]);
+  }, [isRegistered]);
 
   return (
     <Auth.Wrapper>
