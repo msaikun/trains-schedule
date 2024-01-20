@@ -3,9 +3,8 @@ import { ReactNode, useCallback }      from 'react';
 import { DemoContainer }               from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs }                from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider }        from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
-
-type TView = 'day' | 'month' | 'year';
+import { DateTimePicker }              from '@mui/x-date-pickers/DateTimePicker';
+import styled from 'styled-components';
 
 type SelectDateEventType = {
   target: {
@@ -19,12 +18,10 @@ interface IDatePickerProps {
   name?         : string;
   disablePast?  : boolean;
   disableFuture?: boolean;
-  views?        : TView[];
   format?       : string;
   value?        : string | null;
   minDate?      : Dayjs;
   maxDate?      : Dayjs;
-  defaultValue? : string | null;
   readOnly?     : boolean;
   // error?        : boolean;
   // helperText?   : ReactNode;
@@ -39,7 +36,6 @@ const dateFormat = 'MM/DD/YYYY';
 export const DatePicker = ({
   name,
   // label,
-  views,
   disablePast,
   disableFuture,
   format = dateFormat,
@@ -53,40 +49,43 @@ export const DatePicker = ({
   // displayError,
   disabled,
   onChange,
-  defaultValue,
   ...props
 }: IDatePickerProps) => {
-  // const handleChange = useCallback(
-  //   (inputValue: Dayjs | null) => {
-  //     const newDate = dayjs(inputValue).format();
+  const handleChange = useCallback(
+    (inputValue: Dayjs | null) => {
+      const newDate = dayjs(inputValue).format();
 
-  //     if (!onChange) return;
+      if (!onChange) return;
 
-  //     onChange({ target: { value: newDate ?? '', name } });
-  //   },
-  //   [onChange],
-  // );
-
-  const handleChange = () => console.log('1111')
+      onChange({ target: { value: newDate ?? '', name } });
+    },
+    [onChange],
+  );
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={['DatePicker']}>
-        <MUIDatePicker
-          value={value ? dayjs(value) : dayjs()}
-          minDate       = {minDate && dayjs(minDate)}
-          maxDate       = {maxDate && dayjs(maxDate)}
-          disabled      = {disabled}
-          format        = {format}
-          disableFuture = {disableFuture}
-          disablePast   = {disablePast}
-          views         = {views}
-          // defaultValue  = {dayjs(defaultValue)}
-          onChange      = {handleChange}
-          slotProps     = {{ field: { readOnly }}}
-          {...props}
-        />
-      </DemoContainer>
-    </LocalizationProvider>
+    <DatePicker.Wrapper>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DemoContainer components={['DateTimePicker']}>
+          <DateTimePicker
+            value={value ? dayjs(value) : dayjs()}
+            minDate={minDate && dayjs(minDate)}
+            maxDate={maxDate && dayjs(maxDate)}
+            disabled={disabled}
+            // format        = {format}
+            disableFuture={disableFuture}
+            disablePast={disablePast}
+            onChange={handleChange}
+            slotProps={{ field: { readOnly } }}
+            {...props}
+          />
+        </DemoContainer>
+      </LocalizationProvider>
+    </DatePicker.Wrapper>
   );
 };
+
+DatePicker.Wrapper = styled.div`
+  .MuiFormControl-root {
+    background-color: white;
+  }
+`;

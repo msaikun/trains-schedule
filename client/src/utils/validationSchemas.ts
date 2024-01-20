@@ -9,3 +9,7 @@ export const authValidationSchema = (emails: string[], isRegistered: boolean) =>
     .matches(passNumericRegEx, 'Numeric symbols are required')
     .required(),
 });
+
+export const trainScheduleValidationSchema = Yup.object().shape({
+  
+});

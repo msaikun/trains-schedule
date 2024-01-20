@@ -23,7 +23,6 @@ export interface ITrainSchedule {
   carriageType  : ECarriageType;
 }
 
-
 @Table({ tableName: 'schedule' })
 export class Schedule extends Model<Schedule, ITrainSchedule> {
   @ApiProperty({ example: 1, description: 'Unique train id' })

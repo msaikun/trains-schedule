@@ -15,7 +15,6 @@ export interface IDestination {
   status        : ETrainArrival;
   departureTime : string;
   arrivalTime   : string;
-  no            : number;
   price         : number;
   carriageType  : ECarriage;
 }

@@ -3,12 +3,21 @@ import { InjectModel } from "@nestjs/sequelize";
 import { Schedule } from "./schedule.model";
 import { UpdateTrainScheduleDto, CreateTrainScheduleDto } from "./dto/create-train-schedule.dto";
 
+export const removeUndefinedFields = <T>(obj: T): Partial<T> => {
+  const filteredEntries = Object.entries(obj as Record<string, unknown>)
+    .filter(([, value]) => value !== undefined && value !== null);
+
+  const filteredObject = Object.fromEntries(filteredEntries) as Partial<T>;
+
+  return filteredObject;
+};
+
 @Injectable()
 export class ScheduleService {
   constructor(@InjectModel(Schedule) private scheduleRepository: typeof Schedule) {};
 
-  async getTrainsSchedule() {
-    const trainsSchedules = await this.scheduleRepository.findAll();
+  async getTrainsSchedule(consitions) {
+    const trainsSchedules = await this.scheduleRepository.findAll({ where: consitions });
 
     return trainsSchedules;
   };

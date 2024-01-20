@@ -19,7 +19,7 @@ interface IModalProps {
 }
 
 export const Modal = ({
-  withButtons = false,
+  withButtons = true,
   submitText = 'Submit',
   cancelText = 'Cancel',
   children,

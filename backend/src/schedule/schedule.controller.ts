@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ScheduleService } from './schedule.service';
 import { Schedule } from './schedule.model';
@@ -12,10 +12,20 @@ export class ScheduleController {
 
   @ApiOperation({ summary: 'Get all trains schedule' })
   @ApiResponse({ status: 200, type: [Schedule] })
+  @ApiQuery({ name: 'from', required: true })
+  @ApiQuery({ name: 'to', required: true })
+    @ApiQuery({ name: 'departureTime', required: true })
+    @ApiQuery({ name: 'arrivalTime', required: false })
   @Get()
-  getAll() {
-    return this.scheduleService.getTrainsSchedule();
+  async getAll(
+    @Query('from') from: string,
+    @Query('to') to: string,
+    @Query('departureTime') departureTime: string,
+    @Query('arrivalTime') arrivalTime?: string,
+  ) {
+    return this.scheduleService.getTrainsSchedule({ from, to });
   }
+
 
   @ApiOperation({ summary: 'Create new train schedule' })
   @ApiResponse({ status: 200, type: Schedule })
