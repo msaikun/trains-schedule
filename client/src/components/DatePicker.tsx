@@ -1,34 +1,36 @@
-import dayjs, { Dayjs }                from 'dayjs';
-import { ReactNode, useCallback }      from 'react';
-import { DemoContainer }               from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs }                from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider }        from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker }              from '@mui/x-date-pickers/DateTimePicker';
+import dayjs, { Dayjs } from 'dayjs';
+import { ReactNode, useCallback } from 'react';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components';
 
 type SelectDateEventType = {
   target: {
-    value : string | null;
-    name? : string;
+    value: string | null;
+    name?: string;
   };
 };
 
 interface IDatePickerProps {
   // label?        : string;
-  name?         : string;
-  disablePast?  : boolean;
+  name?: string;
+  disablePast?: boolean;
+  withTime?: boolean;
   disableFuture?: boolean;
-  format?       : string;
-  value?        : string | null;
-  minDate?      : Dayjs;
-  maxDate?      : Dayjs;
-  readOnly?     : boolean;
+  format?: string;
+  value?: string | null;
+  minDate?: Dayjs;
+  maxDate?: Dayjs;
+  readOnly?: boolean;
   // error?        : boolean;
   // helperText?   : ReactNode;
-  required?     : boolean;
+  required?: boolean;
   // displayError? : boolean;
-  disabled?     : boolean;
-  onChange?     : (event: SelectDateEventType) => void;
+  disabled?: boolean;
+  onChange?: (event: SelectDateEventType) => void;
 }
 
 const dateFormat = 'MM/DD/YYYY';
@@ -39,6 +41,7 @@ export const DatePicker = ({
   disablePast,
   disableFuture,
   format = dateFormat,
+  withTime = false,
   readOnly = true,
   value,
   // error,
@@ -62,11 +65,13 @@ export const DatePicker = ({
     [onChange],
   );
 
+  const Picker = withTime ? DateTimePicker : MuiDatePicker;
+
   return (
     <DatePicker.Wrapper>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={['DateTimePicker']}>
-          <DateTimePicker
+          <Picker
             value={value ? dayjs(value) : dayjs()}
             minDate={minDate && dayjs(minDate)}
             maxDate={maxDate && dayjs(maxDate)}
@@ -87,5 +92,6 @@ export const DatePicker = ({
 DatePicker.Wrapper = styled.div`
   .MuiFormControl-root {
     background-color: white;
+    width: 100%;
   }
 `;

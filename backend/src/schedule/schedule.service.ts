@@ -16,10 +16,25 @@ export const removeUndefinedFields = <T>(obj: T): Partial<T> => {
 export class ScheduleService {
   constructor(@InjectModel(Schedule) private scheduleRepository: typeof Schedule) {};
 
-  async getTrainsSchedule(consitions) {
-    const trainsSchedules = await this.scheduleRepository.findAll({ where: consitions });
+  async getTrainsSchedule({ page, limit, ...where }) {
+    const offset = (page - 1) * limit;
 
-    return trainsSchedules;
+    const items = await this.scheduleRepository.findAll({
+      offset,
+      limit,
+      where,
+    });
+
+    const totalItems = await this.scheduleRepository.count({ where });
+
+    console.log('page limit', page, limit, totalItems, items);
+
+    return {
+      items,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
   };
   
   async changeTrainDetails(train: UpdateTrainScheduleDto, id: number) {

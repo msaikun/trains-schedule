@@ -9,6 +9,7 @@ import {
   TablePagination,
   TableRow
 } from '@mui/material';
+import { DEFAULT_PAGE_SIZES } from '../utils/constants';
 
 export interface IDataTableCell {
   value  : ReactNode;
@@ -27,23 +28,26 @@ export type TDataTableRow = Array<IDataTableCell>;
 
 export interface IDataTableProps {
   rows          : TDataTableRow[];
-  rowsPerPage?  : number;
-  title?        : string;
+  rowsPerPage   : number;
+  page          : number;
   padding?      : string;
   headers?      : IDataTableHeader[];
   loading?      : boolean;
   noResultText? : string;
+  onPageChange: (page: number) => void;
+  onRowsPerPageChange: (rowsPerPage: number) => void;
 }
-
 
 export const DataTable = ({
   rows,
-  rowsPerPage = 2,
-  title,
+  page,
+  rowsPerPage,
+  noResultText = 'no data',
   padding,
   headers,
   loading,
-  noResultText = 'no data'
+  onPageChange,
+  onRowsPerPageChange,
 }: IDataTableProps) => {
   return (
     <DataTable.Wrapper padding={padding}>
@@ -94,15 +98,13 @@ export const DataTable = ({
       )}
 
       <TablePagination
-        rowsPerPageOptions={[2, 5, 10, 25]}
+        rowsPerPageOptions={DEFAULT_PAGE_SIZES}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}
-        page={0}
-        onPageChange={(a) => console.log('a')}
-        onRowsPerPageChange={(b) => console.log('b')}
-      // onPageChange={handleChangePage}
-      // onRowsPerPageChange={handleChangeRowsPerPage}
+        page={page}
+        onPageChange={(_, page) => onPageChange(page)}
+        onRowsPerPageChange={(event) => onRowsPerPageChange(+event.target.value)}
       />
     </DataTable.Wrapper>
   );

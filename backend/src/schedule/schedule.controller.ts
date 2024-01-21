@@ -14,18 +14,21 @@ export class ScheduleController {
   @ApiResponse({ status: 200, type: [Schedule] })
   @ApiQuery({ name: 'from', required: true })
   @ApiQuery({ name: 'to', required: true })
-    @ApiQuery({ name: 'departureTime', required: true })
-    @ApiQuery({ name: 'arrivalTime', required: false })
+  @ApiQuery({ name: 'page', required: true })
+  @ApiQuery({ name: 'limit', required: true })
+  // @ApiQuery({ name: 'departureTime', required: true })
+  // @ApiQuery({ name: 'arrivalTime', required: false })
   @Get()
   async getAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
     @Query('from') from: string,
     @Query('to') to: string,
-    @Query('departureTime') departureTime: string,
-    @Query('arrivalTime') arrivalTime?: string,
+    // @Query('departureTime') departureTime: string,
+    // @Query('arrivalTime') arrivalTime?: string,
   ) {
-    return this.scheduleService.getTrainsSchedule({ from, to });
+    return this.scheduleService.getTrainsSchedule({ page, limit, from, to });
   }
-
 
   @ApiOperation({ summary: 'Create new train schedule' })
   @ApiResponse({ status: 200, type: Schedule })

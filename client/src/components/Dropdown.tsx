@@ -22,17 +22,20 @@ export const Dropdown = ({
   label,
   options,
   placeholder = 'Select Value',
-  value,
   onChange
 }: IDropdownProps) => {
   const error = getIn(form.errors, field.name);
   const touched = getIn(form.touched, field.name);
 
-  const renderValue = useCallback(() => (
-    <Typography>
-      {value ? value : placeholder}
-    </Typography>
-  ), [placeholder, value]);
+  const renderValue = useCallback(() => {
+    const selectedValue = options.find((option) => option.value === field.value)?.label || '';
+
+    return (
+      <Typography>
+        {selectedValue || placeholder}
+      </Typography>
+    )
+  }, [placeholder, field.value]);
 
   const handleChange = useCallback((value: string) => {
     field.onChange({ target: { value, name: field.name } });
@@ -45,10 +48,11 @@ export const Dropdown = ({
       <Select
         labelId="select-label"
         id="select"
-        value={value}
+        value={field.value}
         placeholder={placeholder}
         renderValue={renderValue}
         label={label}
+
         error={touched && !!error}
         onChange={(e) => handleChange(e.target.value)}
       >

@@ -1,15 +1,16 @@
 export enum ETrainArrival {
-  OnTime,
-  Delayed,
+  OnTime  = 'On Time',
+  Delayed = 'Delayed',
 }
 
 export enum ECarriage {
-  Compartment,
-  SecondClass,
-  Luxe,
+  Compartment = 'Compartment',
+  SecondClass = 'Second Class',
+  Luxe        = 'Luxe',
 }
 
 export interface IDestination {
+  id            : string;
   from          : string;
   to            : string;
   status        : ETrainArrival;
@@ -27,4 +28,11 @@ export interface ISignInUserInfo {
 export interface ISignUpUserInfo extends ISignInUserInfo {
   userName : string;
   isAdmin  : boolean;
+}
+
+export interface IScheduleDataWithPagination {
+  items: IDestination[];
+  currentPage: string;
+  totalItems: number;
+  totalPages: number;
 }

@@ -23,9 +23,4 @@ SchedulePage.getLayout = (page: ReactElement) => (
   </div>
 );
 
-
-export const getStaticProps = async ({ }: {}) => ({
-  props: {},
-});
-
 export default SchedulePage;
