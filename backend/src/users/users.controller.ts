@@ -22,8 +22,6 @@ export class UsersController {
 	async getProfileByToken(@Req() req: any) {
 		const accessToken = req.cookies.accessToken;
 
-		console.log('reeeeeeeeed', req);
-
 		if (!accessToken) {
 			throw new HttpException('Access token not found in the cookie', HttpStatus.INTERNAL_SERVER_ERROR);
 		}

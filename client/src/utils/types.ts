@@ -36,3 +36,14 @@ export interface IScheduleDataWithPagination {
   totalItems  : number;
   totalPages  : number;
 }
+
+export enum EOrder {
+  Desc = 'desc',
+  Asc  = 'asc'
+}
+
+export enum EOrderBy {
+  Status       = 'status',
+  CarriageType = 'carriageType',
+  Price        = 'price'
+}

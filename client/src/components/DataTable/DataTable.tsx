@@ -9,7 +9,9 @@ import {
   TablePagination,
   TableRow
 }                             from '@mui/material';
-import { DEFAULT_PAGE_SIZES } from '../utils/constants';
+import { DEFAULT_PAGE_SIZES } from '../../utils/constants';
+import { DataTableLabel } from './DataTableLabel';
+import { EOrder } from '../../utils/types';
 
 export interface IDataTableCell {
   value  : ReactNode;
@@ -20,8 +22,9 @@ export interface IDataTableCell {
 type TAlignValues = 'left' | 'right' | 'center' | 'justify';
 
 export interface IDataTableHeader {
-  label  : string;
-  align? : TAlignValues;
+  label    : string;
+  align?   : TAlignValues;
+  dataKey? : string;
 }
 
 export type TDataTableRow = Array<IDataTableCell>;
@@ -30,6 +33,8 @@ export interface IDataTableProps {
   rows                : TDataTableRow[];
   rowsPerPage         : number;
   totalItems          : number;
+  order               : EOrder;
+  orderBy             : string;
   page                : number;
   padding?            : string;
   headers?            : IDataTableHeader[];
@@ -37,6 +42,7 @@ export interface IDataTableProps {
   noResultText?       : string;
   onPageChange        : (page: number) => void;
   onRowsPerPageChange : (rowsPerPage: number) => void;
+  onColumnSort?       : (key: string) => void;
 }
 
 export const DataTable = ({
@@ -44,12 +50,15 @@ export const DataTable = ({
   page,
   rowsPerPage,
   totalItems,
+  order,
+  orderBy,
   noResultText = 'no data',
   padding,
   headers,
   loading,
   onPageChange,
   onRowsPerPageChange,
+  onColumnSort,
 }: IDataTableProps) => (
   <DataTable.Wrapper padding={padding}>
     <Table>
@@ -65,6 +74,16 @@ export const DataTable = ({
                 style     = {{ width: 'auto' }}
               >
                 {header.label}
+                {/* {header.dataKey ? (
+                  <DataTableLabel
+                    item       = {header}
+                    order      = {order}
+                    orderBy    = {orderBy}
+                    handleSort = {onColumnSort}
+                  />
+                ) : (
+                  <>{header.label}</>
+                )} */}
               </TableCell>
             ))}
           </DataTable.Headers>

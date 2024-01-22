@@ -12,9 +12,9 @@ export const basicTableHeaders = [
   { label: 'To' },
   { label: 'Departure Time' },
   { label: 'Arrival Time' },
-  { label: 'Price' },
-  { label: 'Carriage Type' },
-  { label: 'Status' },
+  { label: 'Price', dataKey: 'price' },
+  { label: 'Carriage Type', dataKey: 'carriageType' },
+  { label: 'Status', dataKey: 'status' },
 ];
 
 export const trainStatusOptions   = generateOptions(ETrainArrival);

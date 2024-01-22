@@ -20,8 +20,6 @@ export class AuthService {
     const user  = await this.validateUser(userDto);
     const token = await this.generateToken(user);
 
-    console.log('tooooooooooooooken 1', token);
-
     res.cookie('accessToken', token.token, { httpOnly: true });
 
     return token;
@@ -38,20 +36,13 @@ export class AuthService {
     const user         = await this.userService.createUser({ ...userDto, password: hashPassword });
     const token        = await this.generateToken(user);
 
-    console.log('tooooooooooooooken 2', token);
-
     res.cookie('accessToken', token.token, { httpOnly: true });
 
     return token;
   };
 
   async signout(res: Response) {
-    const cookieOptions: CookieOptions = {
-      httpOnly : true,
-      expires  : new Date(0),
-    };
-
-    res.cookie('authToken', '', cookieOptions);
+    res.cookie('accessToken', '', { httpOnly: true, expires: new Date(0)});
 
     return { message: 'Signout successful' };
   };

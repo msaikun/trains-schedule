@@ -1,18 +1,26 @@
 import Head                    from 'next/head';
+import { useRouter }           from 'next/router';
 import React, { ReactElement } from 'react';
-import { Auth }                from '../src/modules/auth/Auth';
 
-const HelloPage = () => (
-  <>
-    <Head>
-      <title>Trains Schedule</title>
-      <meta content="Trains Schedule" name="description" />
-    </Head>
-    <main>
-      <Auth />
-    </main>
-  </>
-);
+const HelloPage = () => {
+  const router = useRouter();
+
+  const onClick = () => router.push('signin');
+
+  return (
+    <>
+      <Head>
+        <title>Trains Schedule</title>
+        <meta content="Trains Schedule" name="description" />
+      </Head>
+      <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+        <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '30px', fontWeight: 700 }}>
+          Let's start!
+        </div>
+      </main>
+    </>
+  );
+}
 
 HelloPage.getLayout = (page: ReactElement) => (
   <div>

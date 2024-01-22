@@ -1,16 +1,16 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Schedule } from "./schedule.model";
 import { UpdateTrainScheduleDto, CreateTrainScheduleDto } from "./dto/create-train-schedule.dto";
 
 export const removeUndefinedFields = <T>(obj: T): Partial<T> => {
   const filteredEntries = Object.entries(obj as Record<string, unknown>)
-    .filter(([, value]) => value !== undefined && value !== null);
+    .filter(([, value]) => !value);
 
   const filteredObject = Object.fromEntries(filteredEntries) as Partial<T>;
 
   return filteredObject;
-};
+}
 
 @Injectable()
 export class ScheduleService {
@@ -19,15 +19,16 @@ export class ScheduleService {
   async getTrainsSchedule({ page, limit, ...where }) {
     const offset = (page - 1) * limit;
 
+    console.log('whhhhhhhhhhhhhhhhhhhh', where);
+
     const items = await this.scheduleRepository.findAll({
       offset,
       limit,
       where,
+      // order: [[orderBy, order]],
     });
 
     const totalItems = await this.scheduleRepository.count({ where });
-
-    console.log('page limit', page, limit, totalItems, items);
 
     return {
       items,
@@ -38,10 +39,6 @@ export class ScheduleService {
   };
   
   async changeTrainDetails(train: UpdateTrainScheduleDto, id: number) {
-    // if (!isAdmin) {
-    //   throw new UnauthorizedException({ message: 'You do not have the necessary privileges' });
-    // }
-
     const existingTrain = await this.scheduleRepository.findOne({ where: { id } });
     if (!existingTrain) {
       throw new NotFoundException({ message: 'Train not found' });
@@ -53,10 +50,6 @@ export class ScheduleService {
   };
 
   async deleteTrainFromSchedule(id: number) {
-    // if (!isAdmin) {
-    //   throw new UnauthorizedException({ message: 'You do not have the necessary privileges' });
-    // }
-
     const existingTrain = await this.scheduleRepository.findOne({ where: { id } })
     if (!existingTrain) {
       throw new NotFoundException({ message: 'Train not found' });
@@ -66,10 +59,6 @@ export class ScheduleService {
   };
 
   async addTrainToSchedule(train: CreateTrainScheduleDto) {
-    // if (!isAdmin) {
-    //   throw new UnauthorizedException({ message: 'You do not have the necessary privileges' });
-    // }
-
     const createdTrain = await this.scheduleRepository.create(train);
 
     return createdTrain;

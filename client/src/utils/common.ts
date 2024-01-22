@@ -2,7 +2,7 @@ import dayjs               from 'dayjs';
 import { enqueueSnackbar } from 'notistack';
 
 import { ETrainArrival, IDestination } from './types';
-import { TDataTableRow }               from '../components/DataTable';
+import { TDataTableRow }               from '../components/DataTable/DataTable';
 
 type TDebouncedFunction = (...args: any[]) => void;
 
@@ -57,3 +57,13 @@ export function debounce<F extends TDebouncedFunction>(func: F, delay: number) {
     }, delay);
   };
 }
+
+export const removeUndefinedFields = <T>(obj: T): Partial<T> => {
+  const filteredEntries = Object.entries(obj as Record<string, unknown>)
+    .filter(([, value]) => value);
+
+  const filteredObject = Object.fromEntries(filteredEntries) as Partial<T>;
+
+  return filteredObject;
+};
+

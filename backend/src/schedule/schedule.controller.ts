@@ -12,22 +12,36 @@ export class ScheduleController {
 
   @ApiOperation({ summary: 'Get all trains schedule' })
   @ApiResponse({ status: 200, type: [Schedule] })
-  @ApiQuery({ name: 'from', required: true })
-  @ApiQuery({ name: 'to', required: true })
   @ApiQuery({ name: 'page', required: true })
   @ApiQuery({ name: 'limit', required: true })
-  // @ApiQuery({ name: 'departureTime', required: true })
+  // @ApiQuery({ name: 'orderBy', required: true })
+  // @ApiQuery({ name: 'order', required: true })
+  @ApiQuery({ name: 'from', required: false })
+  @ApiQuery({ name: 'to', required: false })
+  // @ApiQuery({ name: 'departureTime', required: false })
   // @ApiQuery({ name: 'arrivalTime', required: false })
   @Get()
   async getAll(
     @Query('page') page: number,
     @Query('limit') limit: number,
-    @Query('from') from: string,
-    @Query('to') to: string,
+    // @Query('orderBy') orderBy: string,
+    // @Query('order') order: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+
     // @Query('departureTime') departureTime: string,
     // @Query('arrivalTime') arrivalTime?: string,
   ) {
-    return this.scheduleService.getTrainsSchedule({ page, limit, from, to });
+    return this.scheduleService.getTrainsSchedule({
+      page,
+      // order,
+      // orderBy,
+      limit,
+      from,
+      to,
+      // departureTime,
+      // arrivalTime
+    });
   }
 
   @ApiOperation({ summary: 'Create new train schedule' })

@@ -6,12 +6,14 @@ import { commonErrorHandler }  from '../utils/common';
 interface IUseQueryProps<T> {
   data    : T | null;
   loading : boolean;
+  error   : boolean;
   refetch : (data: any) => void;
 }
 
 export const useQuery = <T>(url: string, initialParams?: { data?: unknown }): IUseQueryProps<T> => {
   const [data, setData]       = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState(false);
 
   const fetchData = async (params: unknown) => {
     try {
@@ -20,6 +22,7 @@ export const useQuery = <T>(url: string, initialParams?: { data?: unknown }): IU
       setData(response.data as T);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data) {
+        setError(true);
         commonErrorHandler(error.response.data);
       }
     } finally {
@@ -35,5 +38,5 @@ export const useQuery = <T>(url: string, initialParams?: { data?: unknown }): IU
     fetchData({ data: newParams });
   };
 
-  return { data, loading, refetch };
+  return { data, loading, refetch, error };
 };

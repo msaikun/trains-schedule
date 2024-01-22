@@ -13,8 +13,9 @@ export const apiCaller: TApiCaller = (endpoint, request = {}) => {
   const headers = {} as AxiosRequestHeaders;
 
   headers['Content-Type'] = 'application/json';
+  headers['Access-Control-Allow-Credentials'] = 'true';
 
-  const requestData: AxiosRequestConfig = { headers, method };
+  const requestData: AxiosRequestConfig = { headers, method, withCredentials: true };
 
   if (method === 'get') {
     requestData.params = data;

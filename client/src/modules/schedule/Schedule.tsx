@@ -1,23 +1,22 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter }                      from 'next/router';
 import styled                             from 'styled-components';
 import { Button, IconButton, Paper }      from '@mui/material';
 import DeleteIcon                         from '@mui/icons-material/Delete';
 import EditIcon                           from '@mui/icons-material/Edit';
 
-import { DataTable, TDataTableRow } from '../../components/DataTable';
+import { DataTable, TDataTableRow } from '../../components/DataTable/DataTable';
 import { useMutation }              from '../../hooks/useMutation';
 import { useQuery }                 from '../../hooks/useQuery';
+import { Loader } from '../../components/Loader';
 
-import { transformToDataTableRows, debounce } from '../../utils/common';
+import { transformToDataTableRows, debounce, removeUndefinedFields } from '../../utils/common';
 import { DEBOUNCE_DEFAULT_TIME, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, basicTableHeaders } from '../../utils/constants';
-import { IDestination, IScheduleDataWithPagination, ISignUpUserInfo } from '../../utils/types';
+import { EOrder, IDestination, IScheduleDataWithPagination, ISignUpUserInfo } from '../../utils/types';
 
 import { ScheduleSearch }      from './SchedulesSearch';
 import { UpdateTrainSchedule } from './UpdateTrainScheduleModal';
 import { DeleteTrain }         from './DeleteTrainModal';
-
-const isAdmin = true;
 
 export const Schedule = () => {
   const router = useRouter();
@@ -37,16 +36,24 @@ export const Schedule = () => {
     arrivalTime   : '',
   });
 
-  const { data: loggedUserInfo } = useQuery<ISignUpUserInfo>('users/info');
+  const [sortOption, setSortOptions] = useState<{ order: EOrder, orderBy: string }>({ order: EOrder.Desc, orderBy: 'price' });
 
-  console.log('trainSearchInfo', trainSearchInfo);
-
-  const queryParams = { ...pagination, ...trainSearchInfo };
+  const queryParams = removeUndefinedFields({ ...pagination, ...trainSearchInfo, ...sortOption });
 
   const { data, loading, refetch } = useQuery<IScheduleDataWithPagination>('schedule', { data: queryParams });
+  const { data: loggedUserInfo, loading: isUserInfoLoading, error } = useQuery<ISignUpUserInfo>('users/info');
 
-  const { mutate: deleteTrain } = useMutation(`schedule/${trainToDelete?.id}`, 'Train was successfully deleted from schedule', 'delete');
-  // const { mutate: logOut } = useMutation('signout', 'You was signed out successfully');
+  const { mutate: deleteTrain, loading: isTrainDeleting } = useMutation(`schedule/${trainToDelete?.id}`, 'Train was successfully deleted from schedule', 'delete');
+  const { mutate: logOut, loading: isLoggingOut }         = useMutation('auth/signout', 'You was signed out successfully');
+
+  const isAdmin = useMemo(() => loggedUserInfo?.isAdmin || false, [loggedUserInfo]);
+
+  const isPageLoading = useMemo(() => isTrainDeleting
+    || isLoggingOut
+    || isUserInfoLoading
+    || loading,
+    [isTrainDeleting, isLoggingOut, isUserInfoLoading, loading],
+  );
 
   const getRowActions = (row: { item: IDestination; tableRow: TDataTableRow }) => (
     <>
@@ -81,7 +88,7 @@ export const Schedule = () => {
     setTrainToDelete(null);
   }, [trainToDelete?.id, queryParams]);
 
-  const updateTrainDetails = useCallback(async () => {
+  const updateTrainDetails = useCallback(async (values: IDestination) => {
     setTrainToEdit(null);
     await refetch({ ...queryParams });
   }, [queryParams]);
@@ -96,18 +103,16 @@ export const Schedule = () => {
     refetch({ ...queryParams, limit });
   }, [queryParams]);
 
-  const onLogOutClick = useCallback(() => {
-    // logOut();
-    // я не оторимую юзера через те, що на беку не можу отримати юзера по токену.
-    // бачу, що токен, який я отримую при сайт іні відрізняється від того, який бачу в аплікейшин
-    // хочу додати логіку на беку, що бзер який зареєструвався відразу логіниться, щоб я могла отримати токен
-  }, []);
+  const onLogOutClick = useCallback(async () => {
+    await logOut();
+    router.push('signin');
+  }, [logOut]);
 
   const handleSearchInfoChange = (property: string, value: string) => {
     const newTrainsSearchInfo = { ...trainSearchInfo, [property]: value };
 
     setTrainSearchInfo(newTrainsSearchInfo);
-    refetch({ ...queryParams, [property]: value });
+    refetch(removeUndefinedFields({ ...queryParams, [property]: value }));
   };
 
   const onFromCityChange = debounce((from: string) => {
@@ -126,49 +131,74 @@ export const Schedule = () => {
     handleSearchInfoChange('arrivalTime', arrivalTime);
   };
 
+  const onColumnSort = (key: string) => {
+    const order = sortOption.orderBy === key && sortOption.order === EOrder.Asc ? EOrder.Desc : EOrder.Asc;
+    const sortValues = { order, orderBy: key };
+
+    console.log('sortValues', sortValues, 'sortOption', sortOption)
+  
+    refetch(removeUndefinedFields({ ...queryParams, ...sortValues }));
+    setSortOptions(sortValues);
+  };
+
+  useEffect(() => {
+    if (error) {
+      onLogOutClick();
+    }
+  }, [error]);
+
+  console.log('sortOption', sortOption);
+
   return (
     <>
-      <Schedule.LogOut>
-        <Button variant="contained" onClick={onLogOutClick}>
-          Log Out
-        </Button>
-      </Schedule.LogOut>
+      {isPageLoading && <Loader />}
 
-      <ScheduleSearch
-        isAdmin           = {isAdmin}
-        setTrainToEdit    = {setTrainToEdit}
-        onFromCityChange  = {onFromCityChange}
-        onToCityChange    = {onToCityChange}
-        onStartDateChange = {onStartDateChange}
-        onEndDateChange   = {onEndDateChange}
-      />
+      <Schedule.Wrapper isLoading={isPageLoading}>
+        <Schedule.LogOut>
+          <Button variant="contained" onClick={onLogOutClick}>
+            Log Out
+          </Button>
+        </Schedule.LogOut>
 
-      <Paper elevation={3} sx={{ margin: '30px', overflow: 'auto' }}>
-        <DataTable
-          rows                = {tableRows}
-          page                = {Number(data?.currentPage) - 1 || 0}
-          totalItems          = {data?.totalItems || 0}
-          rowsPerPage         = {pagination.limit}
-          headers             = {tableHeaders}
-          loading             = {loading}
-          noResultText        = "No available trains"
-          onPageChange        = {onPageChange}
-          onRowsPerPageChange = {onRowsPerPageChange}
+        <ScheduleSearch
+          isAdmin           = {isAdmin}
+          setTrainToEdit    = {setTrainToEdit}
+          onFromCityChange  = {onFromCityChange}
+          onToCityChange    = {onToCityChange}
+          onStartDateChange = {onStartDateChange}
+          onEndDateChange   = {onEndDateChange}
         />
-      </Paper>
 
-      <UpdateTrainSchedule
-        open         = {!!trainToEdit}
-        train        = {trainToEdit as IDestination}
-        handleClose  = {() => setTrainToEdit(null)}
-        handleSubmit = {updateTrainDetails}
-      />
+        <Paper elevation={3} sx={{ margin: '30px', overflow: 'auto' }}>
+          <DataTable
+            rows                = {tableRows}
+            page                = {Number(data?.currentPage) - 1 || 0}
+            totalItems          = {data?.totalItems || 0}
+            order               = {sortOption.order}
+            orderBy             = {sortOption.orderBy}
+            rowsPerPage         = {pagination.limit}
+            headers             = {tableHeaders}
+            loading             = {loading}
+            noResultText        = "No available trains"
+            onPageChange        = {onPageChange}
+            onRowsPerPageChange = {onRowsPerPageChange}
+            onColumnSort        = {onColumnSort}
+          />
+        </Paper>
 
-      <DeleteTrain
-        open         = {!!trainToDelete}
-        handleClose  = {() => setTrainToDelete(null)}
-        handleSubmit = {deleteTrainFromSchedule}
-      />
+        <UpdateTrainSchedule
+          open         = {!!trainToEdit}
+          train        = {trainToEdit as IDestination}
+          handleClose  = {() => setTrainToEdit(null)}
+          handleSubmit = {updateTrainDetails}
+        />
+
+        <DeleteTrain
+          open         = {!!trainToDelete}
+          handleClose  = {() => setTrainToDelete(null)}
+          handleSubmit = {deleteTrainFromSchedule}
+        />
+      </Schedule.Wrapper>
     </>
   );
 }
@@ -178,3 +208,10 @@ Schedule.LogOut = styled.div`
   justify-content : end;
   margin          : 20px 30px 0;
 `;
+
+Schedule.Wrapper = styled.div<{ isLoading: boolean }>(({ isLoading }) => `
+  ${isLoading && `
+    filter         : blur(1px);
+    pointer-events : none;
+  `}
+`);

@@ -32,7 +32,7 @@ export const Auth = ({ isSignInPage }: IAuthProps) => {
   const router = useRouter();
 
   const { mutate: signIn, loading: isSigningIn } = useMutation('auth/signin', 'You was signed in successfully');
-  const { mutate: signUp, loading: isSigningUp } = useMutation('auth/signup', 'You was signed up successfully. Now you should sign in');
+  const { mutate: signUp, loading: isSigningUp } = useMutation('auth/signup', 'You was signed up successfully');
 
   const isLoading = useMemo(() =>
     isSigningIn || isSigningUp,
