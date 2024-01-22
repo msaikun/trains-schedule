@@ -28,7 +28,7 @@ export const Modal = ({
   handleClose,
   handleSubmit
 }: IModalProps) => (
-  <Dialog open={open} onClose={handleClose}>
+  <Dialog open={open} maxWidth="md" onClose={handleClose}>
     {title && <DialogTitle>{title}</DialogTitle>}
 
     <DialogContent>{children}</DialogContent>

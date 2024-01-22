@@ -38,8 +38,8 @@ export interface IScheduleDataWithPagination {
 }
 
 export enum EOrder {
-  Desc = 'desc',
-  Asc  = 'asc'
+  Desc = 'DESC',
+  Asc  = 'ASC'
 }
 
 export enum EOrderBy {

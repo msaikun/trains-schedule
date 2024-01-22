@@ -20,37 +20,35 @@ export const ScheduleSearch = ({
   onToCityChange,
   onStartDateChange,
   onEndDateChange,
-}: IScheduleSearchProps) => {
-  return (
-    <ScheduleSearch.Wrapper>
-      <Grid container spacing={1}>
-        <Grid item xs={12} md={6}>
-          <ScheduleSearch.TextField label="From" onChange={(e) => onFromCityChange(e.target.value)} />
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <ScheduleSearch.TextField label="To" onChange={(e) => onToCityChange(e.target.value)} />
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <DatePicker label="Start Date" onChange={(e) => onStartDateChange(e.target.value as string)} />
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <DatePicker label="End Date" onChange={(e) => onEndDateChange(e.target.value as string)} />
-        </Grid>
+}: IScheduleSearchProps) => (
+  <ScheduleSearch.Wrapper>
+    <Grid container spacing={1}>
+      <Grid item xs={12} md={6}>
+        <ScheduleSearch.TextField label="From" onChange={(e) => onFromCityChange(e.target.value)} />
       </Grid>
 
-      <ScheduleSearch.ButtonsWrapper>
-        {isAdmin && (
-          <Button onClick={() => setTrainToEdit({} as IDestination)}>
-            Add New Train To Schedule
-          </Button>
-        )}
-      </ScheduleSearch.ButtonsWrapper>
-    </ScheduleSearch.Wrapper>
-  );
-};
+      <Grid item xs={12} md={6}>
+        <ScheduleSearch.TextField label="To" onChange={(e) => onToCityChange(e.target.value)} />
+      </Grid>
+
+      <Grid item xs={12} md={6}>
+        <DatePicker label="Departure Date" onChange={(e) => onStartDateChange(e.target.value as string)} />
+      </Grid>
+
+      <Grid item xs={12} md={6}>
+        <DatePicker label="Arrival Date" onChange={(e) => onEndDateChange(e.target.value as string)} />
+      </Grid>
+    </Grid>
+
+    <ScheduleSearch.ButtonsWrapper>
+      {isAdmin && (
+        <Button onClick={() => setTrainToEdit({} as IDestination)}>
+          Add New Train To Schedule
+        </Button>
+      )}
+    </ScheduleSearch.ButtonsWrapper>
+  </ScheduleSearch.Wrapper>
+);
 
 ScheduleSearch.Wrapper = styled.div`
   margin        : 30px;

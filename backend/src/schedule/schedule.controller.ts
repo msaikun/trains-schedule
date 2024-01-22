@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags }             from '@nestjs/swagger';
 
-import { ScheduleService } from './schedule.service';
-import { Schedule } from './schedule.model';
+import { ScheduleService }                                from './schedule.service';
+import { Schedule }                                       from './schedule.model';
 import { CreateTrainScheduleDto, UpdateTrainScheduleDto } from './dto/create-train-schedule.dto';
 
 @ApiTags('Schedule')
@@ -14,32 +14,32 @@ export class ScheduleController {
   @ApiResponse({ status: 200, type: [Schedule] })
   @ApiQuery({ name: 'page', required: true })
   @ApiQuery({ name: 'limit', required: true })
-  // @ApiQuery({ name: 'orderBy', required: true })
-  // @ApiQuery({ name: 'order', required: true })
+  @ApiQuery({ name: 'orderBy', required: true })
+  @ApiQuery({ name: 'order', required: true })
   @ApiQuery({ name: 'from', required: false })
   @ApiQuery({ name: 'to', required: false })
-  // @ApiQuery({ name: 'departureTime', required: false })
-  // @ApiQuery({ name: 'arrivalTime', required: false })
+  @ApiQuery({ name: 'departureTime', required: false })
+  @ApiQuery({ name: 'arrivalTime', required: false })
   @Get()
   async getAll(
     @Query('page') page: number,
     @Query('limit') limit: number,
-    // @Query('orderBy') orderBy: string,
-    // @Query('order') order: string,
+    @Query('orderBy') orderBy: string,
+    @Query('order') order: string,
     @Query('from') from?: string,
     @Query('to') to?: string,
-    // @Query('departureTime') departureTime?: string,
-    // @Query('arrivalTime') arrivalTime?: string,
+    @Query('departureTime') departureTime?: string,
+    @Query('arrivalTime') arrivalTime?: string,
   ) {
     return this.scheduleService.getTrainsSchedule({
       page,
-      // order,
-      // orderBy,
+      order,
+      orderBy,
       limit,
       from,
       to,
-      // departureTime,
-      // arrivalTime
+      departureTime,
+      arrivalTime
     });
   }
 

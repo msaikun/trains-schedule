@@ -2,13 +2,13 @@ import { Column, DataType, Model, Table } from 'sequelize-typescript';
 import { ApiProperty }                    from '@nestjs/swagger';
 
 export enum ETrainArrivalStatus {
-  OnTime  = 'OnTime',
+  OnTime  = 'On Time',
   Delayed = 'Delayed',
 }
 
 export enum ECarriageType {
   Compartment = 'Compartment',
-  SecondClass = 'SecondClass',
+  SecondClass = 'Second Class',
   Luxe        = 'Luxe',
 }
 

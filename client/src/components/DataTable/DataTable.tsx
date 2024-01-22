@@ -9,9 +9,9 @@ import {
   TablePagination,
   TableRow
 }                             from '@mui/material';
+import { EOrder }             from '../../utils/types';
 import { DEFAULT_PAGE_SIZES } from '../../utils/constants';
-import { DataTableLabel } from './DataTableLabel';
-import { EOrder } from '../../utils/types';
+import { DataTableLabel }     from './DataTableLabel';
 
 export interface IDataTableCell {
   value  : ReactNode;

@@ -1,22 +1,22 @@
-import { Field, Form, Formik } from 'formik';
-import { useMemo } from 'react';
+import { Field, Form, Formik }                         from 'formik';
+import { useMemo }                                     from 'react';
 import { Button, DialogActions, Grid, InputAdornment } from '@mui/material';
 
-import { Modal } from '../../components/Modal';
-import { Input } from '../../components/Input';
-import { Dropdown } from '../../components/Dropdown';
+import { Modal }      from '../../components/Modal';
+import { Input }      from '../../components/Input';
+import { Dropdown }   from '../../components/Dropdown';
 import { DatePicker } from '../../components/DatePicker';
 
-import { ECarriage, ETrainArrival, IDestination } from '../../utils/types';
-import { trainScheduleValidationSchema } from '../../utils/validationSchemas';
-import { splitCamelCase } from '../../utils/common';
+import { ECarriage, ETrainArrival, IDestination }   from '../../utils/types';
+import { trainScheduleValidationSchema }            from '../../utils/validationSchemas';
+import { splitCamelCase }                           from '../../utils/common';
 import { trainCarriageOptions, trainStatusOptions } from '../../utils/constants';
 
 interface IUpdateTrainScheduleProps {
-  train?: IDestination;
-  open: boolean;
-  handleClose: () => void;
-  handleSubmit: (values: any) => void;
+  train?       : IDestination;
+  open         : boolean;
+  handleClose  : () => void;
+  handleSubmit : (values: IDestination) => void;
 }
 
 const formFields = [
@@ -43,7 +43,8 @@ export const UpdateTrainSchedule = ({
   handleClose,
   handleSubmit,
 }: IUpdateTrainScheduleProps) => {
-  const initialValues = useMemo(() => ({
+  const initialValues = useMemo<IDestination>(() => ({
+    id            : train?.id || '',
     from          : train?.from || '',
     to            : train?.to || '',
     departureTime : train?.departureTime || '',
@@ -65,32 +66,26 @@ export const UpdateTrainSchedule = ({
         validationSchema = {trainScheduleValidationSchema}
         onSubmit         = {handleSubmit}
       >
-        {({ values, initialValues, setFieldValue }) => {
-          console.log('form', values, initialValues);
-          return (
-            <Form>
-              <Grid container spacing={2} marginTop={2}>
-                {formFields.map((field) => (
-                  <Grid item xs={6} key={field.name}>
-                    <Field
-                      {...field}
-                      label={splitCamelCase(field.name)}
-                      type={field.type || 'text'}
-                      setFieldValue={setFieldValue}
-                      placeholder={`Enter ${splitCamelCase(field.name)}`}
-                      component={field.component || Input}
-                    />
-                  </Grid>
-                ))}
+        <Form>
+          <Grid container spacing={2} marginTop={2}>
+            {formFields.map((field) => (
+              <Grid item xs={6} key={field.name}>
+                <Field
+                  {...field}
+                  label       = {splitCamelCase(field.name)}
+                  type        = {field.type || 'text'}
+                  placeholder = {`Enter ${splitCamelCase(field.name)}`}
+                  component   = {field.component || Input}
+                />
               </Grid>
+            ))}
+          </Grid>
 
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button type="submit">Save</Button>
-              </DialogActions>
-            </Form>
-          );
-        }}
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button type="submit">Save</Button>
+          </DialogActions>
+        </Form>
       </Formik>
     </Modal>
   );

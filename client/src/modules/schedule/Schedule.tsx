@@ -36,22 +36,26 @@ export const Schedule = () => {
     arrivalTime   : '',
   });
 
-  const [sortOption, setSortOptions] = useState<{ order: EOrder, orderBy: string }>({ order: EOrder.Desc, orderBy: 'price' });
+  const [sortOption, setSortOptions] = useState({ order: EOrder.Desc, orderBy: 'price' });
 
   const queryParams = removeUndefinedFields({ ...pagination, ...trainSearchInfo, ...sortOption });
 
   const { data, loading, refetch } = useQuery<IScheduleDataWithPagination>('schedule', { data: queryParams });
   const { data: loggedUserInfo, loading: isUserInfoLoading, error } = useQuery<ISignUpUserInfo>('users/info');
 
-  const { mutate: deleteTrain, loading: isTrainDeleting } = useMutation(`schedule/${trainToDelete?.id}`, 'Train was successfully deleted from schedule', 'delete');
-  const { mutate: logOut, loading: isLoggingOut }         = useMutation('auth/signout', 'You was signed out successfully');
+  const { mutate: deleteTrain, loading: isTrainDeleting }           = useMutation(`schedule/${trainToDelete?.id}`, 'Train was successfully deleted from schedule', 'delete');
+  const { mutate: logOut, loading: isLoggingOut }                   = useMutation('auth/signout', 'You was signed out successfully');
+  const { mutate: addTrainToSchedule, loading: isTrainAdding }      = useMutation('schedule', 'Train was added successfully');
+  const { mutate: updateTrainInSchedule, loading: isTrainUpdating } = useMutation(`schedule/${trainToEdit?.id}`, 'Train was updated successfully', 'patch');
 
   const isAdmin = useMemo(() => loggedUserInfo?.isAdmin || false, [loggedUserInfo]);
 
   const isPageLoading = useMemo(() => isTrainDeleting
     || isLoggingOut
+    || isTrainAdding
+    || isTrainUpdating
     || isUserInfoLoading,
-    [isTrainDeleting, isLoggingOut, isUserInfoLoading, loading],
+    [isTrainDeleting, isLoggingOut, isUserInfoLoading, isTrainAdding, isTrainUpdating],
   );
 
   const getRowActions = (row: { item: IDestination; tableRow: TDataTableRow }) => (
@@ -87,7 +91,11 @@ export const Schedule = () => {
     setTrainToDelete(null);
   }, [trainToDelete?.id, queryParams]);
 
-  const updateTrainDetails = useCallback(async (values: IDestination) => {
+  const updateAddTrainDetails = useCallback(async (values: IDestination) => {
+    const { id, ...rest } = values;
+
+    id ? await updateTrainInSchedule(rest) : await addTrainToSchedule(rest);
+
     setTrainToEdit(null);
     await refetch({ ...queryParams });
   }, [queryParams]);
@@ -146,8 +154,6 @@ export const Schedule = () => {
     }
   }, [error]);
 
-  console.log('sortOption', sortOption);
-
   return (
     <>
       {isPageLoading && <Loader />}
@@ -189,7 +195,7 @@ export const Schedule = () => {
           open         = {!!trainToEdit}
           train        = {trainToEdit as IDestination}
           handleClose  = {() => setTrainToEdit(null)}
-          handleSubmit = {updateTrainDetails}
+          handleSubmit = {updateAddTrainDetails}
         />
 
         <DeleteTrain

@@ -1,10 +1,13 @@
+import { FieldProps, getIn }           from 'formik';
 import dayjs, { Dayjs }                from 'dayjs';
 import styled                          from 'styled-components';
+import { Tooltip }                     from '@mui/material';
 import { DemoContainer }               from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs }                from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider }        from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker }              from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers/DatePicker';
+
 
 type SelectDateEventType = {
   target: {
@@ -26,6 +29,8 @@ interface IDatePickerProps {
   readOnly?      : boolean;
   required?      : boolean;
   disabled?      : boolean;
+  form?          : FieldProps['form'];
+  field?         : FieldProps['field'];
   onChange?      : (event: SelectDateEventType) => void;
 }
 
@@ -44,46 +49,62 @@ export const DatePicker = ({
   required,
   disabled,
   onChange,
+  form,
+  field,
   ...props
 }: IDatePickerProps) => {
+  const error = getIn(form?.errors, field?.name || '');
+
   const handleChange = (inputValue: Dayjs | null) => {
     const newDate = dayjs(inputValue).format() || '';
 
-    console.log('1', newDate, name, props);
+    if (form && field) {
+      form.setFieldValue(field.name, newDate);
+    }
 
     if (!onChange) return;
 
-    // setFieldValue?.('name', newDate);
     onChange({ target: { value: newDate, name } });
   };
 
   const Picker = withTime ? DateTimePicker : MuiDatePicker;
 
   return (
-    <DatePicker.Wrapper>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={['DateTimePicker']}>
-          <Picker
-            value         = {value ? dayjs(value) : null}
-            minDate       = {minDate && dayjs(minDate)}
-            maxDate       = {maxDate && dayjs(maxDate)}
-            disabled      = {disabled}
-            name          = {name}
-            disableFuture = {disableFuture}
-            disablePast   = {disablePast}
-            onChange      = {handleChange}
-            slotProps     = {{ field: { readOnly } }}
-            {...props}
-          />
-        </DemoContainer>
-      </LocalizationProvider>
-    </DatePicker.Wrapper>
+    <Tooltip title={error}>
+      <DatePicker.Wrapper error={!!error}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer components={['DateTimePicker']}>
+            <Picker
+              value         = {field?.value ? dayjs(field.value) : value ? dayjs(value) : null}
+              minDate       = {minDate && dayjs(minDate)}
+              maxDate       = {maxDate && dayjs(maxDate)}
+              disabled      = {disabled}
+              name          = {name}
+              disableFuture = {disableFuture}
+              disablePast   = {disablePast}
+              onChange      = {handleChange}
+              slotProps     = {{ field: { readOnly } }}
+              {...props}
+            />
+          </DemoContainer>
+        </LocalizationProvider>
+      </DatePicker.Wrapper>
+    </Tooltip>
   );
 };
 
-DatePicker.Wrapper = styled.div`
+DatePicker.Wrapper = styled.div<{ error?: boolean }>`
   .MuiFormControl-root {
     background-color : white;
     width            : 100%;
+  }
+
+  .MuiStack-root {
+    overflow: hidden;
+  }
+
+
+  .MuiInputBase-root {
+    border-bottom: ${({ error }) => (error && '1px solid red')}
   }
 `;

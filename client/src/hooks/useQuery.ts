@@ -7,7 +7,7 @@ interface IUseQueryProps<T> {
   data    : T | null;
   loading : boolean;
   error   : boolean;
-  refetch : (data: any) => void;
+  refetch : (data: unknown) => void;
 }
 
 export const useQuery = <T>(url: string, initialParams?: { data?: unknown }): IUseQueryProps<T> => {
