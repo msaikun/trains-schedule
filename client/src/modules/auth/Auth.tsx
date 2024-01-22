@@ -47,11 +47,10 @@ export const Auth = ({ isSignInPage }: IAuthProps) => {
     try {
       if (isSignInPage) {
         await signIn({ email, password });
-        router.push('schedule');
       } else {
         await signUp({ email, password, userName, isAdmin });
-        router.push('signin');
       }
+      router.push('schedule');
     } catch (error) {
       commonErrorHandler(error);
     }

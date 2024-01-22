@@ -25,9 +25,9 @@ services:
       context: ./backend
     environment:
       - PORT=5002
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=trains-schedule.ch0yu4o08sb6.eu-north-1.rds.amazonaws.com
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=trains-schedule
+      - POSTGRES_DB=postgres
       - POSTGRESS_PASSWORD=Test1234
       - POSTGRES_PORT=5432
     ports:

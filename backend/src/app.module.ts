@@ -20,7 +20,13 @@ import { Schedule } from './schedule/schedule.model';
       password: process.env.POSTGRESS_PASSWORD,
       database: process.env.POSTGRES_DB,
       models: [User, Schedule],
-      autoLoadModels: true
+      autoLoadModels: true,
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      },
     }),
     UsersModule,
     AuthModule,

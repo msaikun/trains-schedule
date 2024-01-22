@@ -18,8 +18,8 @@
 7. cd client
 8. npm run dev
 
-- You can open project on [DEMO](http://localhost:3000/signin)
-- And swagger on [DEMO](http://localhost:5002/api/docs/#)
+- You can open project on [HOST](http://localhost:3000/signin)
+- And swagger on [HOST](http://localhost:5002/api/docs/#)
 
 # BACKEND:
 The project implements the full user life cycle, starting from registration and authorization, ending with convenient log-out. Pagination, sorting and filtering are also implemented. The user also has the ability to view the train schedule, and if necessary, and with the presence of an admin role, edit, delete, and add new schedules to the table.
