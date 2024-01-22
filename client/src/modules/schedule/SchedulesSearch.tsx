@@ -1,67 +1,63 @@
-import { Button, Grid, TextField } from "@mui/material";
-import styled from "styled-components";
-import { DatePicker } from "../../components/DatePicker";
+import styled from 'styled-components';
+import { Button, Grid, TextField } from '@mui/material';
+
+import { DatePicker } from '../../components/DatePicker';
+import { IDestination } from '../../utils/types';
 
 interface IScheduleSearchProps {
-  isAdmin: boolean;
-  from: string;
-  to: string;
-  // ...
+  isAdmin           : boolean;
+  setTrainToEdit    : (train: IDestination) => void;
+  onFromCityChange  : (from: string) => void;
+  onToCityChange    : (to: string) => void;
+  onStartDateChange : (date: string) => void;
+  onEndDateChange   : (date: string) => void;
 }
 
 export const ScheduleSearch = ({
   isAdmin,
-  from,
-  to,
+  setTrainToEdit,
+  onFromCityChange,
+  onToCityChange,
+  onStartDateChange,
+  onEndDateChange,
 }: IScheduleSearchProps) => {
   return (
     <ScheduleSearch.Wrapper>
       <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
-          <ScheduleSearch.TextField
-            value={from}
-            onChange={(e) => console.log(e.target.value)}
-          />
+          <ScheduleSearch.TextField label="From" onChange={(e) => onFromCityChange(e.target.value)} />
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <ScheduleSearch.TextField
-            value={to}
-            onChange={(e) => console.log(e.target.value)}
-          />
+          <ScheduleSearch.TextField label="To" onChange={(e) => onToCityChange(e.target.value)} />
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <DatePicker
-            value={''}
-            onChange={(e) => console.log(e.target.value as any)}
-          />
+          <DatePicker label="Start Date" onChange={(e) => onStartDateChange(e.target.value as string)} />
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <DatePicker
-            value={''}
-            onChange={(e) => console.log(e.target.value as any)}
-          />
+          <DatePicker label="End Date" onChange={(e) => onEndDateChange(e.target.value as string)} />
         </Grid>
       </Grid>
 
       <ScheduleSearch.ButtonsWrapper>
         {isAdmin && (
-          <Button onClick={() => console.log('add')}>Add New Train To Schedule</Button>
+          <Button onClick={() => setTrainToEdit({} as IDestination)}>
+            Add New Train To Schedule
+          </Button>
         )}
-        <Button variant="contained" onClick={() => console.log('found tickets')}>Found tickets</Button>
       </ScheduleSearch.ButtonsWrapper>
     </ScheduleSearch.Wrapper>
   );
 };
 
 ScheduleSearch.Wrapper = styled.div`
-  margin: 30px;
-  padding: 20px;
-  background: #f5f5f5;
-  border-radius: 5px;
-  box-shadow: 2px 2px 10px #acaba7;
+  margin        : 30px;
+  padding       : 20px;
+  background    : #f5f5f5;
+  border-radius : 5px;
+  box-shadow    : 2px 2px 10px #acaba7;
 `;
 
 ScheduleSearch.TextField = styled(TextField)`
@@ -73,8 +69,8 @@ ScheduleSearch.TextField = styled(TextField)`
 `;
 
 ScheduleSearch.ButtonsWrapper = styled.div`
-  display: flex;
-  justify-content: end;
-  margin-top: 10px;
+  display         : flex;
+  justify-content : end;
+  margin-top      : 10px;
 `;
 

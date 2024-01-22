@@ -1,11 +1,14 @@
-import { Formik } from 'formik';
-import { useCallback } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/router';
+import { Formik }               from 'formik';
+import { useCallback, useMemo } from 'react';
+import styled                   from 'styled-components';
+import { useRouter }            from 'next/router';
+import { CircularProgress }     from '@mui/material';
 
+import { commonErrorHandler }   from '../../utils/common';
 import { authValidationSchema } from '../../utils/validationSchemas';
-import LoginImage from '../../assets/log-in.png';
-import { AuthForm } from './AuthForm';
+import { useMutation }          from '../../hooks/useMutation';
+import LoginImage               from '../../assets/log-in.png';
+import { AuthForm }             from './AuthForm';
 
 interface IAuthFormValues {
   userName : string;
@@ -22,38 +25,55 @@ const initialValues = {
 };
 
 interface IAuthProps {
-  isRegistered?: boolean;
+  isSignInPage?: boolean;
 }
 
-export const Auth = ({ isRegistered }: IAuthProps) => {
+export const Auth = ({ isSignInPage }: IAuthProps) => {
   const router = useRouter();
 
+  const { mutate: signIn, loading: isSigningIn } = useMutation('auth/signin', 'You was signed in successfully');
+  const { mutate: signUp, loading: isSigningUp } = useMutation('auth/signup', 'You was signed up successfully. Now you should sign in');
+
+  const isLoading = useMemo(() =>
+    isSigningIn || isSigningUp,
+    [isSigningUp, isSigningIn],
+  );
+
   const onLinkClick = useCallback(() => {
-    router.push(isRegistered ? '/signup' : '/signin');
-  }, []);
+    router.push(isSignInPage ? '/signup' : '/signin');
+  }, [isSignInPage]);
 
   const handleSubmit = useCallback(async ({ email, password, userName, isAdmin }: IAuthFormValues) => {
-    if (isRegistered) {
-      // await signIn({ email, password });
-    } else {
-      // await signUp({ email, password, userName, isAdmin });
+    try {
+      if (isSignInPage) {
+        await signIn({ email, password });
+        router.push('schedule');
+      } else {
+        await signUp({ email, password, userName, isAdmin });
+        router.push('signin');
+      }
+    } catch (error) {
+      commonErrorHandler(error);
     }
-    console.log('auth submit!', isRegistered)
-  }, [isRegistered]);
+  }, [isSignInPage, router]);
 
   return (
     <Auth.Wrapper>
       <img src={LoginImage.src} alt="Auth image" />
 
       <Auth.FormWrapper>
-        <Formik
-          validateOnChange
-          initialValues    = {initialValues}
-          validationSchema = {authValidationSchema([], !!isRegistered)}
-          onSubmit         = {handleSubmit}
-        >
-          <AuthForm isRegistered={!!isRegistered} onLinkClick={onLinkClick} />
-        </Formik>
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <Formik
+            validateOnChange
+            initialValues    = {initialValues}
+            validationSchema = {authValidationSchema([], !!isSignInPage)}
+            onSubmit         = {handleSubmit}
+          >
+            <AuthForm isSignInPage={!!isSignInPage} onLinkClick={onLinkClick} />
+          </Formik>
+        )}
       </Auth.FormWrapper>
     </Auth.Wrapper>
   );

@@ -7,12 +7,13 @@ import { Input } from '../../components/Input';
 import { Dropdown } from '../../components/Dropdown';
 import { DatePicker } from '../../components/DatePicker';
 
-import { ECarriage } from '../../utils/types';
+import { ECarriage, ETrainArrival, IDestination } from '../../utils/types';
 import { trainScheduleValidationSchema } from '../../utils/validationSchemas';
-import { splitCamelCase } from '../../utils/commonFunctions';
+import { splitCamelCase } from '../../utils/common';
 import { trainCarriageOptions, trainStatusOptions } from '../../utils/constants';
 
 interface IUpdateTrainScheduleProps {
+  train?: IDestination;
   open: boolean;
   handleClose: () => void;
   handleSubmit: (values: any) => void;
@@ -37,43 +38,45 @@ const formFields = [
 ];
 
 export const UpdateTrainSchedule = ({
+  train,
   open,
   handleClose,
   handleSubmit,
 }: IUpdateTrainScheduleProps) => {
   const initialValues = useMemo(() => ({
-    from: '',
-    to: '',
-    departureTime: '',
-    arrivalTime: '',
-    status: 'OnTime',
-    carriageType: ECarriage.Compartment,
-    price: 0,
-  }), []);
+    from          : train?.from || '',
+    to            : train?.to || '',
+    departureTime : train?.departureTime || '',
+    arrivalTime   : train?.arrivalTime || '',
+    status        : train?.status || ETrainArrival.Delayed,
+    carriageType  : train?.carriageType || ECarriage.Compartment,
+    price         : train?.price || 0,
+  }), [train]);
 
   return (
     <Modal
-      withButtons={false}
-      open={open}
-      handleClose={handleClose}
+      withButtons = {false}
+      open        = {open}
+      handleClose = {handleClose}
     >
       <Formik
         validateOnChange
-        initialValues={initialValues}
-        validationSchema={trainScheduleValidationSchema}
-        onSubmit={handleSubmit}
+        initialValues    = {initialValues}
+        validationSchema = {trainScheduleValidationSchema}
+        onSubmit         = {handleSubmit}
       >
-        {({ setFieldValue, values, initialValues }) => {
-          console.log('vvv', values, initialValues);
+        {({ values, initialValues, setFieldValue }) => {
+          console.log('form', values, initialValues);
           return (
             <Form>
               <Grid container spacing={2} marginTop={2}>
                 {formFields.map((field) => (
-                  <Grid item xs={6}>
+                  <Grid item xs={6} key={field.name}>
                     <Field
                       {...field}
                       label={splitCamelCase(field.name)}
                       type={field.type || 'text'}
+                      setFieldValue={setFieldValue}
                       placeholder={`Enter ${splitCamelCase(field.name)}`}
                       component={field.component || Input}
                     />
@@ -86,7 +89,7 @@ export const UpdateTrainSchedule = ({
                 <Button type="submit">Save</Button>
               </DialogActions>
             </Form>
-          )
+          );
         }}
       </Formik>
     </Modal>

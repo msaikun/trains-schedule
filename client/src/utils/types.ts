@@ -31,8 +31,8 @@ export interface ISignUpUserInfo extends ISignInUserInfo {
 }
 
 export interface IScheduleDataWithPagination {
-  items: IDestination[];
-  currentPage: string;
-  totalItems: number;
-  totalPages: number;
+  items       : IDestination[];
+  currentPage : string;
+  totalItems  : number;
+  totalPages  : number;
 }

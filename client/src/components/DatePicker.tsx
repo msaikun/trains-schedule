@@ -1,11 +1,10 @@
-import dayjs, { Dayjs } from 'dayjs';
-import { ReactNode, useCallback } from 'react';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs, { Dayjs }                from 'dayjs';
+import styled                          from 'styled-components';
+import { DemoContainer }               from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs }                from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider }        from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker }              from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers/DatePicker';
-import styled from 'styled-components';
 
 type SelectDateEventType = {
   target: {
@@ -15,55 +14,48 @@ type SelectDateEventType = {
 };
 
 interface IDatePickerProps {
-  // label?        : string;
-  name?: string;
-  disablePast?: boolean;
-  withTime?: boolean;
-  disableFuture?: boolean;
-  format?: string;
-  value?: string | null;
-  minDate?: Dayjs;
-  maxDate?: Dayjs;
-  readOnly?: boolean;
-  // error?        : boolean;
-  // helperText?   : ReactNode;
-  required?: boolean;
-  // displayError? : boolean;
-  disabled?: boolean;
-  onChange?: (event: SelectDateEventType) => void;
+  label?         : string;
+  name?          : string;
+  disablePast?   : boolean;
+  withTime?      : boolean;
+  disableFuture? : boolean;
+  format?        : string;
+  value?         : string | null;
+  minDate?       : Dayjs;
+  maxDate?       : Dayjs;
+  readOnly?      : boolean;
+  required?      : boolean;
+  disabled?      : boolean;
+  onChange?      : (event: SelectDateEventType) => void;
 }
 
 const dateFormat = 'MM/DD/YYYY';
 
 export const DatePicker = ({
   name,
-  // label,
   disablePast,
   disableFuture,
-  format = dateFormat,
+  format   = dateFormat,
   withTime = false,
   readOnly = true,
   value,
-  // error,
-  // helperText,
   minDate,
   maxDate,
   required,
-  // displayError,
   disabled,
   onChange,
   ...props
 }: IDatePickerProps) => {
-  const handleChange = useCallback(
-    (inputValue: Dayjs | null) => {
-      const newDate = dayjs(inputValue).format();
+  const handleChange = (inputValue: Dayjs | null) => {
+    const newDate = dayjs(inputValue).format() || '';
 
-      if (!onChange) return;
+    console.log('1', newDate, name, props);
 
-      onChange({ target: { value: newDate ?? '', name } });
-    },
-    [onChange],
-  );
+    if (!onChange) return;
+
+    // setFieldValue?.('name', newDate);
+    onChange({ target: { value: newDate, name } });
+  };
 
   const Picker = withTime ? DateTimePicker : MuiDatePicker;
 
@@ -72,15 +64,15 @@ export const DatePicker = ({
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={['DateTimePicker']}>
           <Picker
-            value={value ? dayjs(value) : dayjs()}
-            minDate={minDate && dayjs(minDate)}
-            maxDate={maxDate && dayjs(maxDate)}
-            disabled={disabled}
-            // format        = {format}
-            disableFuture={disableFuture}
-            disablePast={disablePast}
-            onChange={handleChange}
-            slotProps={{ field: { readOnly } }}
+            value         = {value ? dayjs(value) : null}
+            minDate       = {minDate && dayjs(minDate)}
+            maxDate       = {maxDate && dayjs(maxDate)}
+            disabled      = {disabled}
+            name          = {name}
+            disableFuture = {disableFuture}
+            disablePast   = {disablePast}
+            onChange      = {handleChange}
+            slotProps     = {{ field: { readOnly } }}
             {...props}
           />
         </DemoContainer>
@@ -91,7 +83,7 @@ export const DatePicker = ({
 
 DatePicker.Wrapper = styled.div`
   .MuiFormControl-root {
-    background-color: white;
-    width: 100%;
+    background-color : white;
+    width            : 100%;
   }
 `;

@@ -36,10 +36,12 @@ export const Input = ({
     if (onChange) onChange(value);
 
     let newValue;
+    const parsedIntValue = parseInt(value, 10);
+
     if (type === 'number') {
-      newValue = isNaN(parseInt(value, 10)) ? null : parseInt(value, 10);
+      newValue = isNaN(parsedIntValue) ? null : parsedIntValue;
     } else {
-      newValue = value === '' ? null : value;
+      newValue = value || null;
     }
 
     if (form && field) {
@@ -59,7 +61,7 @@ export const Input = ({
           disabled    = {disabled}
           error       = {!!error}
           type        = {type}
-          value       = {value}
+          value       = {field?.value || value}
           placeholder = {placeholder}
           onChange    = {onChangeInternal}
         />

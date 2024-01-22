@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import styled        from 'styled-components';
+import { ReactNode }         from 'react';
+import styled                from 'styled-components';
 import {
   CircularProgress,
   Table,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TablePagination,
   TableRow
-} from '@mui/material';
+}                             from '@mui/material';
 import { DEFAULT_PAGE_SIZES } from '../utils/constants';
 
 export interface IDataTableCell {
@@ -27,89 +27,88 @@ export interface IDataTableHeader {
 export type TDataTableRow = Array<IDataTableCell>;
 
 export interface IDataTableProps {
-  rows          : TDataTableRow[];
-  rowsPerPage   : number;
-  page          : number;
-  padding?      : string;
-  headers?      : IDataTableHeader[];
-  loading?      : boolean;
-  noResultText? : string;
-  onPageChange: (page: number) => void;
-  onRowsPerPageChange: (rowsPerPage: number) => void;
+  rows                : TDataTableRow[];
+  rowsPerPage         : number;
+  totalItems          : number;
+  page                : number;
+  padding?            : string;
+  headers?            : IDataTableHeader[];
+  loading?            : boolean;
+  noResultText?       : string;
+  onPageChange        : (page: number) => void;
+  onRowsPerPageChange : (rowsPerPage: number) => void;
 }
 
 export const DataTable = ({
   rows,
   page,
   rowsPerPage,
+  totalItems,
   noResultText = 'no data',
   padding,
   headers,
   loading,
   onPageChange,
   onRowsPerPageChange,
-}: IDataTableProps) => {
-  return (
-    <DataTable.Wrapper padding={padding}>
-      <Table>
-        {headers && (
-          <TableHead>
-            <DataTable.Headers>
-              {headers.map((header: IDataTableHeader, headerIndex: number) => (
-                <TableCell
-                  key={headerIndex}
-                  component="th"
-                  scope="row"
-                  align={header.align ?? 'left'}
-                  style={{ width: 'auto' }}
-                >
-                  {header.label}
-                </TableCell>
-              ))}
-            </DataTable.Headers>
-          </TableHead>
-        )}
-
-        {!loading && !!rows.length && (
-          <TableBody>
-            {rows.map((row: TDataTableRow, rowIndex: number) => (
-              <DataTable.Row key={rowIndex}>
-                {row.map((cell: IDataTableCell, cellIndex: number) => (
-                  <TableCell key={cellIndex} align={cell.align ?? 'left'}>
-                    {cell.value}
-                  </TableCell>
-                ))}
-              </DataTable.Row>
+}: IDataTableProps) => (
+  <DataTable.Wrapper padding={padding}>
+    <Table>
+      {headers && (
+        <TableHead>
+          <DataTable.Headers>
+            {headers.map((header: IDataTableHeader, headerIndex: number) => (
+              <TableCell
+                key       = {headerIndex}
+                component = "th"
+                scope     = "row"
+                align     = {header.align ?? 'left'}
+                style     = {{ width: 'auto' }}
+              >
+                {header.label}
+              </TableCell>
             ))}
-          </TableBody>
-        )}
-      </Table>
-
-      {!rows.length && noResultText && !loading ? (
-        <DataTable.NoResult>{noResultText}</DataTable.NoResult>
-      ) : (
-        <>
-          {loading && (
-            <DataTable.Loading>
-              <CircularProgress />
-            </DataTable.Loading>
-          )}
-        </>
+          </DataTable.Headers>
+        </TableHead>
       )}
 
-      <TablePagination
-        rowsPerPageOptions={DEFAULT_PAGE_SIZES}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(_, page) => onPageChange(page)}
-        onRowsPerPageChange={(event) => onRowsPerPageChange(+event.target.value)}
-      />
-    </DataTable.Wrapper>
-  );
+      {!loading && !!rows.length && (
+        <TableBody>
+          {rows.map((row: TDataTableRow, rowIndex: number) => (
+            <DataTable.Row key={rowIndex}>
+              {row.map((cell: IDataTableCell, cellIndex: number) => (
+                <TableCell key={cellIndex} align={cell.align ?? 'left'}>
+                  {cell.value}
+                </TableCell>
+              ))}
+            </DataTable.Row>
+          ))}
+        </TableBody>
+      )}
+    </Table>
 
-}
+    {!rows.length && noResultText && !loading ? (
+      <DataTable.NoResult>{noResultText}</DataTable.NoResult>
+    ) : (
+      <>
+        {loading && (
+          <DataTable.Loading>
+            <CircularProgress />
+          </DataTable.Loading>
+        )}
+      </>
+    )}
+
+    <TablePagination
+      rowsPerPageOptions  = {DEFAULT_PAGE_SIZES}
+      component           = "div"
+      count               = {totalItems}
+      rowsPerPage         = {rowsPerPage}
+      page                = {page}
+      onPageChange        = {(_, pageNumber) => onPageChange(pageNumber)}
+      onRowsPerPageChange = {(event) => onRowsPerPageChange(+event.target.value)}
+    />
+  </DataTable.Wrapper>
+);
 
 DataTable.Wrapper = styled.div<{ padding?: string }>`
   padding: ${({ padding }) => padding || '30px'};

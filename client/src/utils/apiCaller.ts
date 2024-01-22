@@ -1,16 +1,13 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, Method } from 'axios';
 
-const BASE_URL = 'http://localhost:5001';
+const BASE_URL = 'http://localhost:5002';
 
 export type TApiCaller = <R = unknown, T = unknown> (
   endpoint: string,
   request?: { data?: T, method?: Method },
 ) => Promise<({ data: R })>;
 
-export const apiCaller: TApiCaller = (
-  endpoint,
-  request = {},
-) => {
+export const apiCaller: TApiCaller = (endpoint, request = {}) => {
   const { data, method = 'get' } = request;
 
   const headers = {} as AxiosRequestHeaders;

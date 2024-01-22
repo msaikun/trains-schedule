@@ -18,27 +18,30 @@ export class AuthService {
   constructor(private userService: UsersService, private jwtService: JwtService) {}
   async signin(userDto: SigninUserDto, res: Response) {
     const user  = await this.validateUser(userDto);
-    const token = this.generateToken(user);
+    const token = await this.generateToken(user);
 
-    res.cookie('accessToken', token, { httpOnly: true });
+    console.log('tooooooooooooooken 1', token);
+
+    res.cookie('accessToken', token.token, { httpOnly: true });
 
     return token;
   }
 
   async signup(userDto: CreateUserDto, res: Response) {
-    const candidate = await this.userService.getUserByEmail(userDto.email);
+    const newUser = await this.userService.getUserByEmail(userDto.email);
 
-    if (candidate) {
+    if (newUser) {
       throw new HttpException('User with such email already exist', HttpStatus.BAD_REQUEST);
     }
 
     const hashPassword = await bcrypt.hash(userDto.password, 5);
     const user         = await this.userService.createUser({ ...userDto, password: hashPassword });
-    const token        = this.generateToken(user);
+    const token        = await this.generateToken(user);
 
-    res.cookie('accessToken', token, { httpOnly: true });
+    console.log('tooooooooooooooken 2', token);
 
-    console.log('signup token', token);
+    res.cookie('accessToken', token.token, { httpOnly: true });
+
     return token;
   };
 

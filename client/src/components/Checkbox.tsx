@@ -1,7 +1,7 @@
+import { FieldProps }              from 'formik';
+import { useCallback }             from 'react';
+import styled                      from 'styled-components';
 import { Checkbox as MuiCheckbox } from '@mui/material';
-import { FieldProps }            from 'formik';
-import { useCallback }           from 'react';
-import styled                    from 'styled-components';
 
 export interface ICheckboxProps {
   form      : FieldProps['form'];
@@ -14,7 +14,7 @@ export const Checkbox = ({
   field,
   disabled,
   label,
-}: ICheckboxProps): JSX.Element => {
+}: ICheckboxProps) => {
   const handleChange = useCallback((): void => {
     if (disabled) return;
 

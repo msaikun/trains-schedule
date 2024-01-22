@@ -1,12 +1,13 @@
-import { generateOptions } from './commonFunctions';
+import { generateOptions }          from './common';
 import { ECarriage, ETrainArrival } from './types';
 
-export const DEFAULT_PAGE = 1;
-export const DEFAULT_PAGE_SIZE = 10;
-export const DEFAULT_PAGE_SIZES = [1, 5, 10, 25, 50];
+export const DEFAULT_PAGE          = 1;
+export const DEFAULT_PAGE_SIZE     = 5;
+export const DEFAULT_PAGE_SIZES    = [5, 10, 25, 50];
+export const DEBOUNCE_DEFAULT_TIME = 500;
 
 export const basicTableHeaders = [
-  { label: 'ID' },
+  { label: 'No' },
   { label: 'From' },
   { label: 'To' },
   { label: 'Departure Time' },
@@ -16,6 +17,6 @@ export const basicTableHeaders = [
   { label: 'Status' },
 ];
 
-export const trainStatusOptions = generateOptions(ETrainArrival);
+export const trainStatusOptions   = generateOptions(ETrainArrival);
 export const trainCarriageOptions = generateOptions(ECarriage);
 
