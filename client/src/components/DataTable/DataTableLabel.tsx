@@ -2,9 +2,10 @@ import { TableSortLabel } from '@mui/material';
 import ArrowDropDownIcon  from '@mui/icons-material/ArrowDropDown';
 import styled from 'styled-components';
 import { EOrder } from '../../utils/types';
+import { IDataTableHeader } from './DataTable';
 
 interface IDataTableLabelProps {
-  item       : any;
+  item       : IDataTableHeader;
   order      : EOrder;
   orderBy    : string;
   handleSort?: (value: string) => void;

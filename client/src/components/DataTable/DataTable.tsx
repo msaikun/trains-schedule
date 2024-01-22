@@ -73,8 +73,7 @@ export const DataTable = ({
                 align     = {header.align ?? 'left'}
                 style     = {{ width: 'auto' }}
               >
-                {header.label}
-                {/* {header.dataKey ? (
+                {header.dataKey ? (
                   <DataTableLabel
                     item       = {header}
                     order      = {order}
@@ -83,7 +82,7 @@ export const DataTable = ({
                   />
                 ) : (
                   <>{header.label}</>
-                )} */}
+                )}
               </TableCell>
             ))}
           </DataTable.Headers>

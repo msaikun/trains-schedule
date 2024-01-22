@@ -50,8 +50,7 @@ export const Schedule = () => {
 
   const isPageLoading = useMemo(() => isTrainDeleting
     || isLoggingOut
-    || isUserInfoLoading
-    || loading,
+    || isUserInfoLoading,
     [isTrainDeleting, isLoggingOut, isUserInfoLoading, loading],
   );
 

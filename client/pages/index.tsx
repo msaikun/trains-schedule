@@ -14,7 +14,7 @@ const HelloPage = () => {
         <meta content="Trains Schedule" name="description" />
       </Head>
       <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '30px', fontWeight: 700 }}>
+        <div style={{ cursor: 'pointer', fontSize: '30px', fontWeight: 700 }} onClick={onClick}>
           Let's start!
         </div>
       </main>

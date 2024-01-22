@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/sequelize";
-import { Schedule } from "./schedule.model";
-import { UpdateTrainScheduleDto, CreateTrainScheduleDto } from "./dto/create-train-schedule.dto";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Schedule } from './schedule.model';
+import { UpdateTrainScheduleDto, CreateTrainScheduleDto } from './dto/create-train-schedule.dto';
 
 export const removeUndefinedFields = <T>(obj: T): Partial<T> => {
   const filteredEntries = Object.entries(obj as Record<string, unknown>)
@@ -18,8 +18,6 @@ export class ScheduleService {
 
   async getTrainsSchedule({ page, limit, ...where }) {
     const offset = (page - 1) * limit;
-
-    console.log('whhhhhhhhhhhhhhhhhhhh', where);
 
     const items = await this.scheduleRepository.findAll({
       offset,

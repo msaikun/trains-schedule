@@ -28,8 +28,7 @@ export class ScheduleController {
     // @Query('order') order: string,
     @Query('from') from?: string,
     @Query('to') to?: string,
-
-    // @Query('departureTime') departureTime: string,
+    // @Query('departureTime') departureTime?: string,
     // @Query('arrivalTime') arrivalTime?: string,
   ) {
     return this.scheduleService.getTrainsSchedule({
